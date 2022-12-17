@@ -17,12 +17,13 @@ const TASKSLIST = [
 ];
 
 const App = () => {
-  const [tasks, setComplete] = useState(TASKSLIST);
+  const [tasks, setTasks] = useState(TASKSLIST);
+  // const [tasks, setComplete] = useState(TASKSLIST);
   console.log('tasklist:', tasks);
 
   console.log(tasks);
   const completeTask = (id) => {
-    setComplete((tasks) =>
+    setTasks((tasks) =>
       tasks.map((task) => {
         console.log('id:', id, 'task', task);
         if (task.id === id) {
@@ -38,16 +39,12 @@ const App = () => {
 // update tasks, leverage the state
   const deleteTask = id => {
     console.log('in delete!');
-    tasks.map((task) => {
-      if (task.id === id) {
-        console.log('deletable task');
-        // fix functionality!
-        let updatedTasks = tasks.filter(task => task.id !== id);
-        console.log(updatedTasks);
-        return updatedTasks; 
-      } 
-    });
-  };
+    console.log('deletable task');
+    // fix functionality! wrap next three lines in 
+    let updatedTasks = tasks.filter(task => task.id !== id);
+    console.log(updatedTasks);
+    setTasks(updatedTasks); 
+    };
 
   return (
     <div className="App">
@@ -55,7 +52,11 @@ const App = () => {
         <h1>Ada&apos;s Task List</h1>
       </header>
       <main>
-        <div>{<TaskList tasks={tasks} onCompleteTask={completeTask} onDeleteTask={deleteTask}/>}</div>
+        <div>{<TaskList 
+                  tasks={tasks} 
+                  onCompleteTask={completeTask} 
+                  onDeleteTask={deleteTask}
+                  />}</div>
       </main>
     </div>
   );
