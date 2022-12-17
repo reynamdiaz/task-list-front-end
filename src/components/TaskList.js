@@ -14,12 +14,12 @@ const TaskList = (props) => {
           id={task.id}
           title={task.title}
           isComplete={task.isComplete}
+          onCompleteTask={props.onCompleteTask}
         />
       );
     });
   };
   return <ul className="tasks__list no-bullet">{getTaskListJSX(props)}</ul>;
-  // return <ul className="tasks__list no-bullet">{getTaskListJSX(tasks)}</ul>;
 };
 
 TaskList.propTypes = {
@@ -29,7 +29,8 @@ TaskList.propTypes = {
       title: PropTypes.string.isRequired,
       isComplete: PropTypes.bool.isRequired,
     })
-  ).isRequired,
+  ),
+  onCompleteTask: PropTypes.func.isRequired,
 };
 
 export default TaskList;

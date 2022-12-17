@@ -17,18 +17,23 @@ const TASKSLIST = [
 ];
 
 const App = () => {
-  const [complete, setComplete] = useState(TASKSLIST);
+  const [tasks, setComplete] = useState(TASKSLIST);
+  console.log('tasklist:', tasks);
 
+  console.log(tasks);
   const completeTask = (id) => {
-    setComplete(complete => complete.map(task => {
-      if(task.id === id) {
-        return{...task, isComplete: task.isComplete = !complete}
-      } else {
-        return task;
-      }
-    }));
-  }
-  const buttonClass = complete ? 'tasks__item__toggle--completed' : '';
+    setComplete((tasks) =>
+      tasks.map((task) => {
+        console.log('id:', id, 'task', task);
+        if (task.id === id) {
+          console.log('isComplete', task.isComplete);
+          return { ...task, isComplete: !task.isComplete };
+        } else {
+          return task;
+        }
+      })
+    );
+  };
 
   return (
     <div className="App">
@@ -36,7 +41,7 @@ const App = () => {
         <h1>Ada&apos;s Task List</h1>
       </header>
       <main>
-        <div>{<TaskList tasks={TASKSLIST} onCompleteTask={completeTask}/>}</div>
+        <div>{<TaskList tasks={tasks} onCompleteTask={completeTask} />}</div>
       </main>
     </div>
   );
