@@ -3,9 +3,6 @@ import React from 'react';
 import './Task.css';
 
 const Task = (props) => {
-  // // const Task = ({ id, title, isComplete }) => {
-  // // const [complete, setComplete] = useState(isComplete);
-  // const [complete, setComplete] = useState(props.isComplete);
   const buttonClass = props.isComplete ? 'tasks__item__toggle--completed' : '';
 
   return (
@@ -18,7 +15,10 @@ const Task = (props) => {
         {/* {title} */}
       </button>
       {/* delete or filter button*/}
-      <button className="tasks__item__remove button">x</button>
+      <button 
+        className="tasks__item__remove button"
+        onClick={() => props.onDeleteTask(props.id)}
+      >x</button>
     </li>
   );
 };
@@ -28,7 +28,8 @@ Task.propTypes = {
   title: PropTypes.string.isRequired,
   isComplete: PropTypes.bool.isRequired,
   onCompleteTask: PropTypes.func.isRequired,
-  buttonClass: PropTypes.bool
+  buttonClass: PropTypes.bool,
+  onDeleteTask: PropTypes.func.isRequired
 };
 
 export default Task;

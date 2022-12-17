@@ -35,13 +35,27 @@ const App = () => {
     );
   };
 
+// update tasks, leverage the state
+  const deleteTask = id => {
+    console.log('in delete!');
+    tasks.map((task) => {
+      if (task.id === id) {
+        console.log('deletable task');
+        // fix functionality!
+        let updatedTasks = tasks.filter(task => task.id !== id);
+        console.log(updatedTasks);
+        return updatedTasks; 
+      } 
+    });
+  };
+
   return (
     <div className="App">
       <header className="App-header">
         <h1>Ada&apos;s Task List</h1>
       </header>
       <main>
-        <div>{<TaskList tasks={tasks} onCompleteTask={completeTask} />}</div>
+        <div>{<TaskList tasks={tasks} onCompleteTask={completeTask} onDeleteTask={deleteTask}/>}</div>
       </main>
     </div>
   );
