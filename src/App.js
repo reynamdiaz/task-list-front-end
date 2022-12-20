@@ -1,33 +1,56 @@
 import React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 // import { useEffect } from 'react';
 // import axios from 'axios';
 import TaskList from './components/TaskList.js';
 import './App.css';
 
 // maybe delete this? (receiving tasks from API) lines 9 - 20
-const TASKSLIST = [
-  {
-    id: 1,
-    title: 'Mow the lawn',
-    isComplete: false,
-  },
-  {
-    id: 2,
-    title: 'Cook Pasta',
-    isComplete: true,
-  },
-];
+// const TASKSLIST = [
+//   {
+//     id: 1,
+//     title: 'Mow the lawn',
+//     isComplete: false,
+//   },
+//   {
+//     id: 2,
+//     title: 'Cook Pasta',
+//     isComplete: true,
+//   },
+// ];
 
 const App = () => {
   // useEffect to grab list of tasks from DB to use as state
   // useEffect(()=> {1st param, 2nd param})
   // replace state with list of tasks from useEffect
-  const [tasks, setTasks] = useState(TASKSLIST);
-  // const [tasks, setComplete] = useState(TASKSLIST);
-  console.log('tasklist:', tasks);
+  // const [tasks, setTasks] = useState(TASKSLIST);
+  const [tasks, setTasks] = useState([]);
 
-  console.log(tasks);
+  const url = 'https://task-list-api-c17.herokuapp.com';
+  const getAllTasksApi = () => {
+    return axios
+      .get(`${url}/tasks`)
+      .then((response) => {
+        console.log(response.data);
+        return response.data;
+      })
+      .catch((error) => {
+        console.log(error.data);
+      });
+  };
+
+  useEffect(() => {
+    getAllTasksApi().then((tasks) => {
+      setTasks(tasks);
+      console.log(tasks);
+    });
+  }, []);
+
+  // const [tasks, setComplete] = useState(TASKSLIST);
+  // console.log('tasklist:', tasks);
+
+  // console.log(tasks);
   // update completeTask function (toggleCompleteTask in README)
   // to update task isComplete in the DB
   // figure out how
