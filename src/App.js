@@ -1,36 +1,69 @@
 import React from 'react';
 import { useState } from 'react';
-// import { useEffect } from 'react';
-// import axios from 'axios';
+import { useEffect } from 'react';
+import axios from 'axios';
 import TaskList from './components/TaskList.js';
 import './App.css';
 
-// maybe delete this? (receiving tasks from API) lines 9 - 20
-const TASKSLIST = [
-  {
-    id: 1,
-    title: 'Mow the lawn',
-    isComplete: false,
-  },
-  {
-    id: 2,
-    title: 'Cook Pasta',
-    isComplete: true,
-  },
-];
+// // maybe delete this? (receiving tasks from API) lines 9 - 20
+// const TASKSLIST = [
+//   {
+//     id: 1,
+//     title: 'Mow the lawn',
+//     isComplete: false,
+//   },
+//   {
+//     id: 2,
+//     title: 'Cook Pasta',
+//     isComplete: false,
+//   },
+//   {
+//     id: 3,
+//     title: 'Walk the dog',
+//     isComplete: false,
+//   },
+//   {
+//     id: 4,
+//     title: 'Pick up kiddos',
+//     isComplete: false,
+//   },
+//   {
+//     id: 5,
+//     title: 'Get the mail',
+//     isComplete: false,
+//   },
+// ];
 
 const App = () => {
-  // useEffect to grab list of tasks from DB to use as state
-  // useEffect(()=> {1st param, 2nd param})
-  // replace state with list of tasks from useEffect
-  const [tasks, setTasks] = useState(TASKSLIST);
-  // const [tasks, setComplete] = useState(TASKSLIST);
+  const kBaseUrl = 'https://task-list-api-c17.herokuapp.com';
+  // const [tasks, setTasks] = useState(TASKSLIST);
+  // default value for getting the list of tasks from API
+  const [tasks, setTasks] = useState([]);
   console.log('tasklist:', tasks);
 
   console.log(tasks);
   // update completeTask function (toggleCompleteTask in README)
   // to update task isComplete in the DB
   // figure out how
+
+  const getAllTasksApi = () => {
+    return axios.get(`${kBaseUrl}/tasks`)
+    .then(response => {
+      console.log(response.data);
+      return response.status, response.data;
+    })
+    .catch (error => {
+      console.log(error.data);
+    });
+  };
+
+  useEffect(() => {
+    getAllTasksApi()
+    .then(tasks => {
+      console.log(tasks);
+    });
+  }, []);
+
   const completeTask = (id) => {
     setTasks((tasks) =>
       tasks.map((task) => {
