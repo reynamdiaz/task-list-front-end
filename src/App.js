@@ -1,7 +1,8 @@
 import React from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+// import { useEffect } from 'react';
+// import axios from 'axios';
 import TaskList from './components/TaskList.js';
 import './App.css';
 
@@ -33,36 +34,55 @@ import './App.css';
 //     isComplete: false,
 //   },
 // ];
+// maybe delete this? (receiving tasks from API) lines 9 - 20
+// const TASKSLIST = [
+//   {
+//     id: 1,
+//     title: 'Mow the lawn',
+//     isComplete: false,
+//   },
+//   {
+//     id: 2,
+//     title: 'Cook Pasta',
+//     isComplete: true,
+//   },
+// ];
 
 const App = () => {
+  // alternate version of Base URL
+  // const BASE_URL = 'https://task-list-api-c17.herokuapp.com';
   const kBaseUrl = 'https://task-list-api-c17.herokuapp.com';
   // const [tasks, setTasks] = useState(TASKSLIST);
   // default value for getting the list of tasks from API
   const [tasks, setTasks] = useState([]);
   console.log('tasklist:', tasks);
 
-  console.log(tasks);
-  // update completeTask function (toggleCompleteTask in README)
-  // to update task isComplete in the DB
-  // figure out how
-
   const getAllTasksApi = () => {
-    return axios.get(`${kBaseUrl}/tasks`)
-    .then(response => {
-      console.log(response.data);
-      return response.status, response.data;
-    })
-    .catch (error => {
-      console.log(error.data);
-    });
+    return axios
+      .get(`${kBaseUrl}/tasks`)
+      .then((response) => {
+        console.log(response.data);
+        return response.data;
+      })
+      .catch((error) => {
+        console.log(error.data);
+      });
   };
 
   useEffect(() => {
-    getAllTasksApi()
-    .then(tasks => {
+    getAllTasksApi().then((tasks) => {
+      setTasks(tasks);
       console.log(tasks);
     });
   }, []);
+
+  // const [tasks, setComplete] = useState(TASKSLIST);
+  // console.log('tasklist:', tasks);
+
+  // console.log(tasks);
+  // update completeTask function (toggleCompleteTask in README)
+  // to update task isComplete in the DB
+  // figure out how
 
   const completeTask = (id) => {
     setTasks((tasks) =>
