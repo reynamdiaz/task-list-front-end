@@ -48,31 +48,79 @@ import './App.css';
 //   },
 // ];
 
- // alternate version of Base URL
+// alternate version of Base URL
 // const BASE_URL = 'https://task-list-api-c17.herokuapp.com';
 const kBaseUrl = 'https://task-list-api-c17.herokuapp.com';
 
 // convert from API function goes here:
 // const convertFromApi = (apiTask) => {
-//   const {id, title, description} = apiTask;
-//   const newTask = {id, title, description};
-//   // const {id, title, description, is_complete} = apiTask;
-//   // const newTask = {id, title, description, isComplete: is_complete};
+//   //   const { id, title, description } = apiTask;
+//   //   const newTask = { id, title, description };
+//   // const { id, title, description, is_complete } = apiTask;
+//   // const newTask = { id, title, description, isComplete: is_complete };
+//   const { is_complete, ...rest} = apiTask;
+//   const newTask = {isComplete: is_complete, ...rest};
 //   return newTask;
 // };
-
+// get request
 const getAllTasksApi = () => {
   return axios
     .get(`${kBaseUrl}/tasks`)
     .then((response) => {
       console.log(response.data);
       return response.data;
+      // return response.data.map(convertFromApi);
+    })
+    .catch((error) => {
+      console.log(error.data);
+    });
+};
+// delete request
+const deleteTasksApi = (id) => {
+  return axios
+    .delete(`${kBaseUrl}/tasks_${id}`)
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+      // return convertFromApi(response.data);
+    })
+    .catch((error) => {
+      console.log(error.data);
+    });
+};
+// patch request
+const markCompleteTasksApi = (id) => {
+  return axios
+    .patch(`${kBaseUrl}/tasks/task_${id}/mark_complete`)
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+      // return convertFromApi(response.data);
     })
     .catch((error) => {
       console.log(error.data);
     });
 };
 
+const markIncompleteTasksApi = (id) => {
+  return axios
+    .patch(`${kBaseUrl}/tasks/task_${id}/mark_incomplete`)
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+      // return convertFromApi(response.data);
+    })
+    .catch((error) => {
+      console.log(error.data);
+    });
+};
+
+const postTasksApi = () => {
+  return axios.post(`${kBaseUrl}/tasks`).then((response) => {
+    return response.data;
+    // return convertFromApi(response.data);
+  });
+};
 const App = () => {
   // const [tasks, setTasks] = useState(TASKSLIST);
   // default value for getting the list of tasks from API
@@ -81,8 +129,7 @@ const App = () => {
 
   // create a helper function above the useEffect to keep the useEffect small
   const getAllTasks = () => {
-    getAllTasksApi()
-    .then(tasks => {
+    return getAllTasksApi().then((tasks) => {
       setTasks(tasks);
       console.log(tasks);
     });
@@ -95,9 +142,8 @@ const App = () => {
 
   // old useEffect
   // useEffect(() => {
-  //   getAllTasksApi()
-  //   .then(tasks => {
-  //     // setTasks(tasks);
+  //   getAllTasksApi().then((tasks) => {
+  //     setTasks(tasks);
   //     console.log(tasks);
   //   });
   // }, []);
@@ -107,28 +153,52 @@ const App = () => {
   // figure out how
 
   const completeTask = (id) => {
-    setTasks((tasks) =>
-      tasks.map((task) => {
-        console.log('id:', id, 'task', task);
-        if (task.id === id) {
-          console.log('isComplete', task.isComplete);
-          return { ...task, isComplete: !task.isComplete };
-        } else {
-          return task;
-        }
-      })
-    );
+    return markCompleteTasksApi(id).then((taskResult) => {
+      setTasks((tasks) =>
+        tasks.map((task) => {
+          console.log('id:', id, 'task', task);
+          if (task.id === id) {
+            console.log('isComplete', task.isComplete);
+            return { ...task, isComplete: !taskResult.isComplete };
+          } else {
+            return task;
+          }
+        })
+      );
+    });
+  };
+
+  const incompleteTask = (id) => {
+    return markIncompleteTasksApi(id).then((taskResult) => {
+      setTasks((tasks) =>
+        tasks.map((task) => {
+          console.log('id:', id, 'task', task);
+          if (task.id === id) {
+            console.log('isComplete', task.isComplete);
+            return { ...task, isComplete: !taskResult.isComplete };
+          } else {
+            return task;
+          }
+        })
+      );
+    });
   };
 
   // update tasks, leverage the state
   const deleteTask = (id) => {
     console.log('in delete!');
     console.log('deletable task');
-    // fix functionality! wrap next three lines in
-    let updatedTasks = tasks.filter((task) => task.id !== id);
-    console.log(updatedTasks);
-    setTasks(updatedTasks);
+    return deleteTasksApi().then((taskResult) => {
+      setTasks((tasks) =>
+        tasks.filter((task) => {
+          return task.id !== taskResult.id;
+        })
+      );
+    });
   };
+  // let updatedTasks = tasks.filter((task) => task.id !== id);
+  // console.log(updatedTasks);
+  // setTasks(updatedTasks);
 
   return (
     <div className="App">
