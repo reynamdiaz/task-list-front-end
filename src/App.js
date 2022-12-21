@@ -4,6 +4,7 @@ import axios from 'axios';
 // import { useEffect } from 'react';
 // import axios from 'axios';
 import TaskList from './components/TaskList.js';
+import NewTaskForm from './components/NewTaskForm.js';
 import './App.css';
 
 // this hardcoded data is not needed since receiving tasks from API (lines 9 - 20)
@@ -76,10 +77,16 @@ const markCompleteTasksApi = (id, markComplete) => {
     });
 };
 
-const postTasksApi = () => {
-  return axios.post(`${kBaseUrl}/tasks`).then((response) => {
+const addNewTaskApi = (tasks) => {
+  const requestBody = {...tasks};
+
+  return axios.post(`${kBaseUrl}/tasks`, requestBody)
+  .then((response) => {
     // return response.data;
     return convertFromApi(response.data);
+  })
+  .catch(error => {
+    console.log(error);
   });
 };
 
@@ -136,36 +143,54 @@ const App = () => {
     //       console.log(error.message);
     //     });
     // };
-    return markCompleteTasksApi(id, !task.isComplete).then((taskResult) => {
-      setTasks((tasks) =>
-        tasks.map((task) => {
-          console.log('id:', id, 'task', task);
-          if (task.id === id) {
-            console.log('isComplete', task.isComplete);
-            return { ...task, isComplete: !taskResult.isComplete };
-          } else {
-            return task;
-          }
-        })
-      );
-    });
+    return markCompleteTasksApi(id, !task.isComplete)
+      .then((taskResult) => {
+        setTasks((tasks) =>
+          tasks.map((task) => {
+            console.log('id:', id, 'task', task);
+            if (task.id === taskResult.id) {
+              console.log('isComplete', task.isComplete);
+              // return { ...task, isComplete: !taskResult.isComplete };
+              return taskResult;
+            } else {
+              return task;
+            }
+          })
+        );
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   };
 
   // update tasks, leverage the state
   const deleteTask = (id) => {
     console.log('in delete!');
     console.log('deletable task');
-    return deleteTasksApi(id).then((taskResult) => {
-      // setTasks((tasks) =>
-      //   tasks.filter((task) => {
-      //     return task.id !== taskResult.id;
-      //   }));
-      return getAllTasks();
-    });
+    return deleteTasksApi(id)
+      .then(() => {
+        // setTasks((tasks) =>
+        //   tasks.filter((task) => {
+        //     return task.id !== taskResult.id;
+        //   }));
+        return getAllTasks();
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   };
   // let updatedTasks = tasks.filter((task) => task.id !== id);
   // console.log(updatedTasks);
   // setTasks(updatedTasks);
+
+  const handleTaskSubmit = (data) => {
+    addNewTaskApi(data)
+    .then(newTask => {
+      setTasks([...tasks, newTask]);
+    })
+    .catch(error => 
+      console.log(error));
+  };
 
   return (
     <div className="App">
@@ -174,6 +199,8 @@ const App = () => {
       </header>
       <main>
         <div>
+        <h2>Add a New Task! Get Things Done!</h2>
+        <NewTaskForm handleTaskSubmit={handleTaskSubmit}/>
           {
             <TaskList
               tasks={tasks}
