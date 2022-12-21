@@ -6,7 +6,7 @@ import axios from 'axios';
 import TaskList from './components/TaskList.js';
 import './App.css';
 
-// this hardcoded data is not needed since receiving tasks from API (lines 9 - 20) 
+// this hardcoded data is not needed since receiving tasks from API (lines 9 - 20)
 // const TASKSLIST = [
 //   {
 //     id: 1,
@@ -32,7 +32,7 @@ const kBaseUrl = 'https://task-list-api-c17.herokuapp.com';
 // convert from API function goes here:
 const convertFromApi = (apiTask) => {
   const { id, title, description, is_complete: isComplete } = apiTask;
-  const newTask = { id, title, description, isComplete};
+  const newTask = { id, title, description, isComplete };
   return newTask;
 };
 
@@ -52,7 +52,7 @@ const getAllTasksApi = () => {
 // delete request
 const deleteTasksApi = (id) => {
   return axios
-    .delete(`${kBaseUrl}/tasks_${id}`)
+    .delete(`${kBaseUrl}/tasks/${id}`)
     .then((response) => {
       console.log(response.data);
       // return response.data;
@@ -63,24 +63,11 @@ const deleteTasksApi = (id) => {
     });
 };
 // patch request
-const markCompleteTasksApi = (id) => {
+const markCompleteTasksApi = (id, markComplete) => {
+  const endpoint = markComplete ? 'mark_complete' : 'mark_incomplete';
   return axios
-    .patch(`${kBaseUrl}/tasks/task_${id}/mark_complete`)
+    .patch(`${kBaseUrl}/tasks/${id}/${endpoint}`)
     .then((response) => {
-      console.log(response.data);
-      // return response.data;
-      return convertFromApi(response.data);
-    })
-    .catch((error) => {
-      console.log(error.data);
-    });
-};
-
-const markIncompleteTasksApi = (id) => {
-  return axios
-    .patch(`${kBaseUrl}/tasks/task_${id}/mark_incomplete`)
-    .then((response) => {
-      console.log(response.data);
       // return response.data;
       return convertFromApi(response.data);
     })
@@ -96,12 +83,11 @@ const postTasksApi = () => {
   });
 };
 
-
 const App = () => {
   // const [tasks, setTasks] = useState(TASKSLIST);
   // default value for getting the list of tasks from API
   const [tasks, setTasks] = useState([]);
-  console.log('tasklist:', tasks);
+  // console.log('tasklist:', tasks);
 
   // create a helper function above the useEffect to keep the useEffect small
   const getAllTasks = () => {
@@ -124,43 +110,48 @@ const App = () => {
   //   });
   // }, []);
 
-  const completeTask = (id) => {
-    return markCompleteTasksApi(id).then((taskResult) => {
-      setTasks((tasks) =>
-        tasks.map((task) => {
-          console.log('id:', id, 'task', task);
-          if (task.id === id) {
-            console.log('isComplete', task.isComplete);
-            return { ...task, isComplete: !taskResult.isComplete };
-          } else {
-            return task;
-          }
-        })
-      );
-    });
-  };
+  const updateTask = (id) => {
+    const task = tasks.find((task) => task.id === id);
+    if (!task) {
+      return Promise.resolve();
+    }
 
-  const incompleteTask = (id) => {
-    return markIncompleteTasksApi(id).then((taskResult) => {
-      setTasks((tasks) =>
-        tasks.map((task) => {
-          console.log('id:', id, 'task', task);
-          if (task.id === id) {
-            console.log('isComplete', task.isComplete);
-            return { ...task, isComplete: !taskResult.isComplete };
-          } else {
-            return task;
-          }
-        })
-      );
-    });
+    return markCompleteTasksApi(id, !task.isComplete)
+      .then((newTask) => {
+        setTasks((oldTasks) => {
+          return oldTasks.map((task) => {
+            if (task.id === newTask.id) {
+              return newTask;
+            } else {
+              return task;
+            }
+          });
+        });
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   };
+  //   return markCompleteTasksApi(id, !task.isComplete).then((taskResult) => {
+  //     setTasks((tasks) =>
+  //       tasks.map((task) => {
+  //         console.log('id:', id, 'task', task);
+  //         if (task.id === id) {
+  //           console.log('isComplete', task.isComplete);
+  //           return { ...task, isComplete: !taskResult.isComplete };
+  //         } else {
+  //           return task;
+  //         }
+  //       })
+  //     );
+  //   });
+  // };
 
   // update tasks, leverage the state
   const deleteTask = (id) => {
     console.log('in delete!');
     console.log('deletable task');
-    return deleteTasksApi(id).then(taskResult => {
+    return deleteTasksApi(id).then((taskResult) => {
       // setTasks((tasks) =>
       //   tasks.filter((task) => {
       //     return task.id !== taskResult.id;
@@ -182,7 +173,7 @@ const App = () => {
           {
             <TaskList
               tasks={tasks}
-              onCompleteTask={completeTask}
+              onCompleteTask={updateTask}
               onDeleteTask={deleteTask}
             />
           }
