@@ -48,38 +48,60 @@ import './App.css';
 //   },
 // ];
 
+ // alternate version of Base URL
+// const BASE_URL = 'https://task-list-api-c17.herokuapp.com';
+const kBaseUrl = 'https://task-list-api-c17.herokuapp.com';
+
+// convert from API function goes here:
+// const convertFromApi = (apiTask) => {
+//   const {id, title, description} = apiTask;
+//   const newTask = {id, title, description};
+//   // const {id, title, description, is_complete} = apiTask;
+//   // const newTask = {id, title, description, isComplete: is_complete};
+//   return newTask;
+// };
+
+const getAllTasksApi = () => {
+  return axios
+    .get(`${kBaseUrl}/tasks`)
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error.data);
+    });
+};
+
 const App = () => {
-  // alternate version of Base URL
-  // const BASE_URL = 'https://task-list-api-c17.herokuapp.com';
-  const kBaseUrl = 'https://task-list-api-c17.herokuapp.com';
   // const [tasks, setTasks] = useState(TASKSLIST);
   // default value for getting the list of tasks from API
   const [tasks, setTasks] = useState([]);
   console.log('tasklist:', tasks);
 
-  const getAllTasksApi = () => {
-    return axios
-      .get(`${kBaseUrl}/tasks`)
-      .then((response) => {
-        console.log(response.data);
-        return response.data;
-      })
-      .catch((error) => {
-        console.log(error.data);
-      });
-  };
-
-  useEffect(() => {
-    getAllTasksApi().then((tasks) => {
+  // create a helper function above the useEffect to keep the useEffect small
+  const getAllTasks = () => {
+    getAllTasksApi()
+    .then(tasks => {
       setTasks(tasks);
       console.log(tasks);
     });
+  };
+
+  // then have to modify the useEffect
+  useEffect(() => {
+    getAllTasks();
   }, []);
 
-  // const [tasks, setComplete] = useState(TASKSLIST);
-  // console.log('tasklist:', tasks);
+  // old useEffect
+  // useEffect(() => {
+  //   getAllTasksApi()
+  //   .then(tasks => {
+  //     // setTasks(tasks);
+  //     console.log(tasks);
+  //   });
+  // }, []);
 
-  // console.log(tasks);
   // update completeTask function (toggleCompleteTask in README)
   // to update task isComplete in the DB
   // figure out how

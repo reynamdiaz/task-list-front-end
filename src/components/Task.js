@@ -26,7 +26,7 @@ const Task = (props) => {
 Task.propTypes = {
   id: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
-  isComplete: PropTypes.bool.isRequired,
+  isComplete: PropTypes.bool,
   onCompleteTask: PropTypes.func.isRequired,
   buttonClass: PropTypes.bool,
   onDeleteTask: PropTypes.func.isRequired
