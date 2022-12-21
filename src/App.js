@@ -91,10 +91,14 @@ const App = () => {
 
   // create a helper function above the useEffect to keep the useEffect small
   const getAllTasks = () => {
-    return getAllTasksApi().then((tasks) => {
-      setTasks(tasks);
-      console.log(tasks);
-    });
+    return getAllTasksApi()
+      .then((tasks) => {
+        setTasks(tasks);
+        console.log(tasks);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   };
 
   // then have to modify the useEffect
@@ -116,36 +120,36 @@ const App = () => {
       return Promise.resolve();
     }
 
-    return markCompleteTasksApi(id, !task.isComplete)
-      .then((newTask) => {
-        setTasks((oldTasks) => {
-          return oldTasks.map((task) => {
-            if (task.id === newTask.id) {
-              return newTask;
-            } else {
-              return task;
-            }
-          });
-        });
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+    //   return markCompleteTasksApi(id, !task.isComplete)
+    //     .then((newTask) => {
+    //       setTasks((oldTasks) => {
+    //         return oldTasks.map((task) => {
+    //           if (task.id === newTask.id) {
+    //             return newTask;
+    //           } else {
+    //             return task;
+    //           }
+    //         });
+    //       });
+    //     })
+    //     .catch((error) => {
+    //       console.log(error.message);
+    //     });
+    // };
+    return markCompleteTasksApi(id, !task.isComplete).then((taskResult) => {
+      setTasks((tasks) =>
+        tasks.map((task) => {
+          console.log('id:', id, 'task', task);
+          if (task.id === id) {
+            console.log('isComplete', task.isComplete);
+            return { ...task, isComplete: !taskResult.isComplete };
+          } else {
+            return task;
+          }
+        })
+      );
+    });
   };
-  //   return markCompleteTasksApi(id, !task.isComplete).then((taskResult) => {
-  //     setTasks((tasks) =>
-  //       tasks.map((task) => {
-  //         console.log('id:', id, 'task', task);
-  //         if (task.id === id) {
-  //           console.log('isComplete', task.isComplete);
-  //           return { ...task, isComplete: !taskResult.isComplete };
-  //         } else {
-  //           return task;
-  //         }
-  //       })
-  //     );
-  //   });
-  // };
 
   // update tasks, leverage the state
   const deleteTask = (id) => {
