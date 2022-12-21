@@ -53,23 +53,20 @@ import './App.css';
 const kBaseUrl = 'https://task-list-api-c17.herokuapp.com';
 
 // convert from API function goes here:
-// const convertFromApi = (apiTask) => {
-//   //   const { id, title, description } = apiTask;
-//   //   const newTask = { id, title, description };
-//   // const { id, title, description, is_complete } = apiTask;
-//   // const newTask = { id, title, description, isComplete: is_complete };
-//   const { is_complete, ...rest} = apiTask;
-//   const newTask = {isComplete: is_complete, ...rest};
-//   return newTask;
-// };
+const convertFromApi = (apiTask) => {
+  const { id, title, description, is_complete: isComplete } = apiTask;
+  const newTask = { id, title, description, isComplete};
+  return newTask;
+};
+
 // get request
 const getAllTasksApi = () => {
   return axios
     .get(`${kBaseUrl}/tasks`)
     .then((response) => {
       console.log(response.data);
-      return response.data;
-      // return response.data.map(convertFromApi);
+      // return response.data;
+      return response.data.map(convertFromApi);
     })
     .catch((error) => {
       console.log(error.data);
@@ -81,8 +78,8 @@ const deleteTasksApi = (id) => {
     .delete(`${kBaseUrl}/tasks_${id}`)
     .then((response) => {
       console.log(response.data);
-      return response.data;
-      // return convertFromApi(response.data);
+      // return response.data;
+      return convertFromApi(response.data);
     })
     .catch((error) => {
       console.log(error.data);
@@ -94,8 +91,8 @@ const markCompleteTasksApi = (id) => {
     .patch(`${kBaseUrl}/tasks/task_${id}/mark_complete`)
     .then((response) => {
       console.log(response.data);
-      return response.data;
-      // return convertFromApi(response.data);
+      // return response.data;
+      return convertFromApi(response.data);
     })
     .catch((error) => {
       console.log(error.data);
@@ -107,8 +104,8 @@ const markIncompleteTasksApi = (id) => {
     .patch(`${kBaseUrl}/tasks/task_${id}/mark_incomplete`)
     .then((response) => {
       console.log(response.data);
-      return response.data;
-      // return convertFromApi(response.data);
+      // return response.data;
+      return convertFromApi(response.data);
     })
     .catch((error) => {
       console.log(error.data);
@@ -117,10 +114,12 @@ const markIncompleteTasksApi = (id) => {
 
 const postTasksApi = () => {
   return axios.post(`${kBaseUrl}/tasks`).then((response) => {
-    return response.data;
-    // return convertFromApi(response.data);
+    // return response.data;
+    return convertFromApi(response.data);
   });
 };
+
+
 const App = () => {
   // const [tasks, setTasks] = useState(TASKSLIST);
   // default value for getting the list of tasks from API
