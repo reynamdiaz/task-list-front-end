@@ -6,7 +6,7 @@ import axios from 'axios';
 import TaskList from './components/TaskList.js';
 import './App.css';
 
-// // maybe delete this? (receiving tasks from API) lines 9 - 20
+// this hardcoded data is not needed since receiving tasks from API (lines 9 - 20) 
 // const TASKSLIST = [
 //   {
 //     id: 1,
@@ -22,30 +22,7 @@ import './App.css';
 //     id: 3,
 //     title: 'Walk the dog',
 //     isComplete: false,
-//   },
-//   {
-//     id: 4,
-//     title: 'Pick up kiddos',
-//     isComplete: false,
-//   },
-//   {
-//     id: 5,
-//     title: 'Get the mail',
-//     isComplete: false,
-//   },
-// ];
-// maybe delete this? (receiving tasks from API) lines 9 - 20
-// const TASKSLIST = [
-//   {
-//     id: 1,
-//     title: 'Mow the lawn',
-//     isComplete: false,
-//   },
-//   {
-//     id: 2,
-//     title: 'Cook Pasta',
-//     isComplete: true,
-//   },
+//   }
 // ];
 
 // alternate version of Base URL
@@ -147,10 +124,6 @@ const App = () => {
   //   });
   // }, []);
 
-  // update completeTask function (toggleCompleteTask in README)
-  // to update task isComplete in the DB
-  // figure out how
-
   const completeTask = (id) => {
     return markCompleteTasksApi(id).then((taskResult) => {
       setTasks((tasks) =>
@@ -187,12 +160,12 @@ const App = () => {
   const deleteTask = (id) => {
     console.log('in delete!');
     console.log('deletable task');
-    return deleteTasksApi().then((taskResult) => {
-      setTasks((tasks) =>
-        tasks.filter((task) => {
-          return task.id !== taskResult.id;
-        })
-      );
+    return deleteTasksApi(id).then(taskResult => {
+      // setTasks((tasks) =>
+      //   tasks.filter((task) => {
+      //     return task.id !== taskResult.id;
+      //   }));
+      return getAllTasks();
     });
   };
   // let updatedTasks = tasks.filter((task) => task.id !== id);
