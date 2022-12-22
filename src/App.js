@@ -57,7 +57,7 @@ const deleteTasksApi = (id) => {
     .then((response) => {
       console.log(response.data);
       // return response.data;
-      return convertFromApi(response.data);
+      return convertFromApi(response.data.task);
     })
     .catch((error) => {
       console.log(error.data);
@@ -70,7 +70,7 @@ const markCompleteTasksApi = (id, markComplete) => {
     .patch(`${kBaseUrl}/tasks/${id}/${endpoint}`)
     .then((response) => {
       // return response.data;
-      return convertFromApi(response.data);
+      return convertFromApi(response.data.task);
     })
     .catch((error) => {
       console.log(error.data);
@@ -83,7 +83,7 @@ const addNewTaskApi = (tasks) => {
   return axios.post(`${kBaseUrl}/tasks`, requestBody)
   .then((response) => {
     // return response.data;
-    return convertFromApi(response.data);
+    return convertFromApi(response.data.task);
   })
   .catch(error => {
     console.log(error);
