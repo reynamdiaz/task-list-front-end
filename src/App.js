@@ -70,6 +70,7 @@ const markCompleteTasksApi = (id, markComplete) => {
     .patch(`${kBaseUrl}/tasks/${id}/${endpoint}`)
     .then((response) => {
       // return response.data;
+      // pay attention to data structure type being returned to access correct info
       return convertFromApi(response.data.task);
     })
     .catch((error) => {
@@ -78,16 +79,18 @@ const markCompleteTasksApi = (id, markComplete) => {
 };
 
 const addNewTaskApi = (tasks) => {
-  const requestBody = {...tasks};
+  const requestBody = { ...tasks };
 
-  return axios.post(`${kBaseUrl}/tasks`, requestBody)
-  .then((response) => {
-    // return response.data;
-    return convertFromApi(response.data.task);
-  })
-  .catch(error => {
-    console.log(error);
-  });
+  return axios
+    .post(`${kBaseUrl}/tasks`, requestBody)
+    .then((response) => {
+      // return response.data;
+      // pay attention to data structure type being returned to access correct info
+      return convertFromApi(response.data.task);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
 
 const App = () => {
@@ -185,11 +188,10 @@ const App = () => {
 
   const handleTaskSubmit = (data) => {
     addNewTaskApi(data)
-    .then(newTask => {
-      setTasks([...tasks, newTask]);
-    })
-    .catch(error => 
-      console.log(error));
+      .then((newTask) => {
+        setTasks([...tasks, newTask]);
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -199,8 +201,8 @@ const App = () => {
       </header>
       <main>
         <div>
-        <h2>Add a New Task! Get Things Done!</h2>
-        <NewTaskForm handleTaskSubmit={handleTaskSubmit}/>
+          <h2>Add a New Task! Get Things Done!</h2>
+          <NewTaskForm handleTaskSubmit={handleTaskSubmit} />
           {
             <TaskList
               tasks={tasks}
